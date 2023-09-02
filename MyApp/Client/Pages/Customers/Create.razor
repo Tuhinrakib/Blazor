@@ -1,0 +1,63 @@
+﻿@page "/Customers/Create"
+@using MyApp.Shared.DTO
+@using MyApp.Shared.Models
+@inject HttpClient http
+@inject IToastService toastService
+
+<div class="row" style="background-color:aqua">
+    <div class="col-12 m-auto p-5 shadow rounded">
+        <EditForm Model="@customer" OnValidSubmit="SaveCustomer">
+            <h3 class="display-4">Add New Customer</h3>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="shadow p-4 text-danger bg-white" />
+            <div class="row mb-1">
+                <label class="col-form-label col-2">Customer Name</label>
+                <div class="col-6">
+                    <InputText @bind-Value="customer.CustomerName" class="form-control" />
+                </div>
+                <div class="col-4">
+                    <ValidationMessage For="@(()=>customer.CustomerName)" class="text-danger" />
+                </div>
+            </div>
+            <div class="row mb-1">
+                <label class="col-form-label col-2">Address</label>
+                <div class="col-6">
+                    <InputText @bind-Value="customer.Address" class="form-control" />
+                </div>
+                <div class="col-4">
+                    <ValidationMessage For="@(()=>customer.Address)" class="text-danger" />
+                </div>
+            </div>
+            <div class="row mb-1">
+                <label class="col-form-label col-2">Email</label>
+                <div class="col-6">
+                    <InputText @bind-Value="customer.Email" class="form-control" />
+                </div>
+                <div class="col-4">
+                    <ValidationMessage For="@(()=>customer.Email)" class="text-danger" />
+                </div>
+            </div>
+            <div class="row mb-1">
+                <div class="col-10 offset-2">
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Save</button>
+                </div>
+            </div>
+        </EditForm>
+    </div>
+    <div class="col-12">
+        <a href="Customers/List" class="btn btn-link"><i class="bi bi-arrow-bar-left"></i> Back to list</a>
+    </div>
+</div>
+
+@code {
+    private Customer customer = new();
+    private async Task SaveCustomer()
+    {
+        var response = await http.PostAsJsonAsync("api/Customers", customer);
+        if (response.IsSuccessStatusCode)
+        {
+            toastService.ShowSuccess("Data inserted successfully!!");
+            customer = new();
+        }
+    }
+}

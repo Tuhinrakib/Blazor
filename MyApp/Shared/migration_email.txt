@@ -1,0 +1,8 @@
+﻿tuhinrakib3456@gmail.com
+Tuhinrakib3456@gmail.com
+
+Add-Migration ScriptA -context ApplicationDbContext
+Add-Migration ScriptA -context ProductDbContext
+
+update-database -context ApplicationDbContext
+update-database -context ProductDbContext

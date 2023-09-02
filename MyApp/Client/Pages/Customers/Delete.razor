@@ -1,0 +1,54 @@
+﻿@page "/Customers/delete/{id:int}"
+@using MyApp.Shared.DTO
+@using MyApp.Shared.Models
+@inject HttpClient http
+@inject IToastService toastService
+@inject NavigationManager nav
+
+<div class="row m-auto p-5 shadow rounded" style="background-color:aqua">
+    @if(customer is null)
+    {
+        <div>Loading.....</div>
+    }
+    else
+    {
+        <EditForm Model="@customer" OnValidSubmit="DeleteCustomer">
+            <h3 class="display-4 alert alert-danger">Are you sure to delete?</h3>
+            <div class="row mb-1">
+                <label class="col-form-label">Customer Name : @customer.CustomerName</label>
+            </div>
+            <div class="row mb-1">
+                <label class="col-form-label">Customer Address : @customer.Address</label>
+            </div>
+            <div class="row mb-1">
+                <label class="col-form-label">Customer Email : @customer.Email</label>
+            </div>
+            <div class="row mb-1">
+                <div >
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </div>
+            </div>
+        </EditForm>
+    }
+</div>
+<div class="col-12">
+    <a href="Customers/List" class="btn btn-link"><i class="bi bi-arrow-bar-left"></i> Back to list</a>
+</div>
+
+@code {
+    [Parameter] public int id { get; set; }
+    private Customer? customer = default!;
+    protected override async Task OnInitializedAsync()
+    {
+        customer = await http.GetFromJsonAsync<Customer>($"api/Customers/{id}");
+    }
+    private async Task DeleteCustomer()
+    {
+        var response = await http.DeleteAsync($"api/Customers/{id}");
+        if (response.IsSuccessStatusCode)
+        {
+            toastService.ShowSuccess("Data deleted successfully!!");
+            nav.NavigateTo("/Customers/List");
+        }
+    }
+}
